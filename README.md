@@ -14,11 +14,7 @@ Hi, I'm **Kelvin Nyakundi**. I am a passionate web developer, graphic designer, 
 - **Description**: A fully responsive website platform built with HTML, CSS, JavaScript, Bootstrap, and Django.
 - **Technologies Used**: HTML, CSS, JavaScript, Bootstrap, Django.
 
-### Project 2: [IT Support Dashboard](#)
-- **Description**: An internal dashboard for IT support ticket management.
-- **Technologies Used**: HTML, CSS, JavaScript.
-
-### Project 3: [Portfolio Website](https://github.com/KelvinTaii/portfolio.github.io)
+### Project 2: [Portfolio Website](https://github.com/KelvinTaii/portfolio.github.io)
 - **Description**: A modern portfolio website showcasing creative work.
 - **Technologies Used**: HTML, CSS, JavaScript.
 
@@ -34,9 +30,9 @@ Hi, I'm **Kelvin Nyakundi**. I am a passionate web developer, graphic designer, 
 Feel free to reach out to me for any inquiries or collaboration opportunities:
 
 - **Email**: [nyakundilizper@gmail.com](mailto:nyakundilizper@gmail.com)
-- **GitHub**: [KelvinTaii](https://github.com/KelvinTaii)
-- **LinkedIn**: [Kelvin Taii](https://www.linkedin.com/in/kelvin-taii/)
-- **Twitter**: [LostTai](https://twitter.com/losttai)
+- **GitHub**: [GitHub](https://github.com/KelvinTaii)
+- **LinkedIn**: [LinkedIn](https://www.linkedin.com/in/kelvin-taii/)
+- **Twitter**: [Twitter](https://twitter.com/losttai)
 
 ## License
 
