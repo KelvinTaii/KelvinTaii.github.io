@@ -2,31 +2,51 @@
 
 Welcome to my portfolio website! This site showcases my projects, skills, and experiences. 
 
+![Portfolio Banner](https://img.icons8.com/fluency/180/000000/code.png)
+
 ## About Me
 
-I am Kelvin Nyakundi, a passionate developer with skills in web development, particularly focusing on HTML, CSS, and JavaScript. I love building responsive and interactive web applications.
+Hi, I'm **Kelvin Nyakundi**. I am a passionate web developer, graphic designer, and IT technical support specialist. I specialize in creating modern, responsive websites and providing technical support solutions. With a strong foundation in both design and development, I strive to create seamless digital experiences that meet client needs.
 
 ## Projects
 
-### Project 1: [Project Name](link-to-project)
-- **Description**: Brief description of the project.
-- **Technologies Used**: List of technologies used in the project.
+### Project 1: [Golf Club Website](https://github.com/KelvinTaii/gofugolfclub)
+- **Description**: A fully responsive website platform built with HTML, CSS, JavaScript, Bootstrap, and Django.
+- **Technologies Used**: HTML, CSS, JavaScript, Bootstrap, Django.
 
-### Project 2: [Project Name](link-to-project)
-- **Description**: Brief description of the project.
-- **Technologies Used**: List of technologies used in the project.
+### Project 2: [IT Support Dashboard](#)
+- **Description**: An internal dashboard for IT support ticket management.
+- **Technologies Used**: HTML, CSS, JavaScript.
+
+### Project 3: [Portfolio Website](https://github.com/KelvinTaii/portfolio.github.io)
+- **Description**: A modern portfolio website showcasing creative work.
+- **Technologies Used**: HTML, CSS, JavaScript.
 
 ## Technologies
 
-- HTML
-- CSS
-- Bootstrap
-- 
+- **Web Development**: HTML5, CSS3, JavaScript (ES6+), Bootstrap, Django.
+- **Design**: Logo Design, Photoshop, Canva, Posters and Flyers.
+- **IT Support**: Hardware Troubleshooting, Software Installation, Network Configuration, System Maintenance, User Support, Technical Documentation.
+- **Database Administration**: MySQL, PostgreSQL, MongoDB, Database Design, Query Optimization, Backup & Recovery.
 
 ## Contact
 
-- **Email**: [your-email@example.com](mailto:your-email@example.com)
-- **GitHub**: [KelvinTaii](https://github.com/KelvinTaii)
-- **LinkedIn**: [Your LinkedIn Profile](link-to-linkedin)
+Feel free to reach out to me for any inquiries or collaboration opportunities:
 
-Feel free to explore my projects and reach out if you have any questions or collaboration ideas! 
+- **Email**: [nyakundilizper@gmail.com](mailto:nyakundilizper@gmail.com)
+- **GitHub**: [KelvinTaii](https://github.com/KelvinTaii)
+- **LinkedIn**: [Kelvin Taii](https://www.linkedin.com/in/kelvin-taii/)
+- **Twitter**: [LostTai](https://twitter.com/losttai)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgements
+
+- Thanks to all the amazing projects and people that inspired and helped me along the way.
+- Any other acknowledgements or credits you want to give.
+
+---
+
+Thank you for visiting my portfolio! I hope you enjoy exploring my work.
