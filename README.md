@@ -18,7 +18,7 @@ Hi, I'm **Kelvin Nyakundi**. I am a passionate web developer, graphic designer, 
 - **Description**: A modern portfolio website showcasing creative work.
 - **Technologies Used**: HTML, CSS, JavaScript.
 
-## Technologies
+## Skills
 
 - **Web Development**: HTML5, CSS3, JavaScript (ES6+), Bootstrap, Django.
 - **Design**: Logo Design, Photoshop, Canva, Posters and Flyers.
@@ -29,7 +29,7 @@ Hi, I'm **Kelvin Nyakundi**. I am a passionate web developer, graphic designer, 
 
 Feel free to reach out to me for any inquiries or collaboration opportunities:
 
-- **Email**: [nyakundilizper@gmail.com](mailto:nyakundilizper@gmail.com)
+- **Email**: [Email](mailto:nyakundilizper@gmail.com)
 - **GitHub**: [GitHub](https://github.com/KelvinTaii)
 - **LinkedIn**: [LinkedIn](https://www.linkedin.com/in/kelvin-taii/)
 - **Twitter**: [Twitter](https://twitter.com/losttai)
