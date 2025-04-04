@@ -3,7 +3,9 @@
 Welcome to my portfolio website! This site showcases my projects, skills, and experiences. 
 
 ![Portfolio Banner](https://img.icons8.com/fluency/180/000000/code.png)
-
+---
+[View My Portfolio](kelvintaii.me/portfolio.github.io
+---
 ## About Me
 
 Hi, I'm **Kelvin Nyakundi**. I am a passionate web developer, graphic designer, and IT technical support specialist. I specialize in creating modern, responsive websites and providing technical support solutions. With a strong foundation in both design and development, I strive to create seamless digital experiences that meet client needs.
@@ -41,7 +43,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgements
 
 - Thanks to all the amazing projects and people that inspired and helped me along the way.
-- Any other acknowledgements or credits you want to give.
 
 ---
 
