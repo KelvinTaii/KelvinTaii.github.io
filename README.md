@@ -1,4 +1,4 @@
-# Kelvin Nyakundi's [Portfolio](https://kelvintaii.me/portfolio.github.io/)
+# Kelvin Nyakundi's [Portfolio](https://kelvintaii.me/portfolio/)
 
 Welcome to my portfolio website! This site showcases my projects, skills, and experiences. 
 
