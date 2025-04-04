@@ -4,7 +4,7 @@ Welcome to my portfolio website! This site showcases my projects, skills, and ex
 
 ![Portfolio Banner](https://img.icons8.com/fluency/180/000000/code.png)
 ---
-[View My Portfolio](kelvintaii.me/portfolio.github.io
+- [View My Portfolio](kelvintaii.me/portfolio.github.io
 ---
 ## About Me
 
