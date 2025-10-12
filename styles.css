@@ -1,31 +1,4 @@
-/* Custom Font Definitions */
-@font-face {
-    font-family: 'Frankfurt Messe';
-    src: local('Space Grotesk'), local('Inter'), sans-serif;
-    font-weight: 300;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Puritan Swash';
-    src: local('Playfair Display'), local('Georgia'), serif;
-    font-weight: 400;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Sevilla Decor X';
-    src: local('Dancing Script'), local('Cinzel'), cursive;
-    font-weight: 500;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Brandwire';
-    src: local('Orbitron'), local('Space Grotesk'), sans-serif;
-    font-weight: 600;
-    font-style: normal;
-}
+/* Custom Font Definitions removed - fonts are provided via Google Fonts in index.html */
 
 /* CSS Variables for Dark Theme */
 :root {
@@ -57,7 +30,7 @@ html {
 }
 
 body {
-    font-family: 'Frankfurt Messe', 'Space Grotesk', 'Inter', sans-serif;
+    font-family: 'Frankfurt Messe', sans-serif;
     background-color: var(--bg-primary);
     color: var(--text-primary);
     line-height: 1.6;
@@ -94,7 +67,7 @@ body {
 }
 
 .logo-text {
-    font-family: 'Brandwire', 'Orbitron', 'Space Grotesk', sans-serif;
+    font-family: 'Brandwire', sans-serif;
     font-size: 1.8rem;
     font-weight: 600;
     background: var(--gradient-primary);
@@ -176,7 +149,7 @@ body {
 }
 
 .greeting {
-    font-family: 'Frankfurt Messe', 'Space Grotesk', 'Inter', sans-serif;
+    font-family: 'Frankfurt Messe', sans-serif;
     font-size: 1.5rem;
     color: var(--text-secondary);
     display: block;
@@ -186,7 +159,7 @@ body {
 }
 
 .name {
-    font-family: 'Brandwire', 'Orbitron', 'Space Grotesk', sans-serif;
+    font-family: 'Brandwire', sans-serif;
     background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -233,7 +206,7 @@ body {
 }
 
 .hero-subtitle {
-    font-family: 'Sevilla Decor X', 'Dancing Script', 'Cinzel', cursive;
+    font-family: 'Sevilla Decor X', cursive;
     font-size: 1.5rem;
     color: var(--accent-color);
     margin-bottom: 1.5rem;
@@ -347,7 +320,7 @@ body {
 }
 
 .section-title {
-    font-family: 'Brandwire', 'Orbitron', 'Space Grotesk', sans-serif;
+    font-family: 'Brandwire', sans-serif;
     font-size: 3rem;
     text-align: center;
     margin-bottom: 3rem;
@@ -399,7 +372,7 @@ body {
 }
 
 .stat-number {
-    font-family: 'Brandwire', 'Orbitron', 'Space Grotesk', sans-serif;
+    font-family: 'Brandwire', sans-serif;
     font-size: 2.5rem;
     font-weight: 600;
     color: var(--primary-color);
@@ -558,7 +531,7 @@ body {
 }
 
 .project-title {
-    font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: 1.5rem;
     margin-bottom: 1rem;
     color: var(--text-primary);
@@ -623,7 +596,7 @@ body {
 }
 
 .category-title {
-    font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: 1.5rem;
     margin-bottom: 2rem;
     color: var(--text-primary);
@@ -664,7 +637,7 @@ body {
 }
 
 .contact-title {
-    font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: 2rem;
     margin-bottom: 1rem;
     color: var(--text-primary);
