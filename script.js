@@ -282,6 +282,8 @@ function initTypingAnimation() {
             // when remaining equals finalKeep, we're done
             if (remaining.toLowerCase() === finalKeep) {
                 typedEl.textContent = finalKeep;
+                // add final class for subtle pop/fade animation
+                typedEl.classList.add('final');
                 setTimeout(() => { if (caretEl) caretEl.style.opacity = '0'; }, 300);
                 return;
             }

@@ -191,6 +191,17 @@ body {
     white-space: nowrap;
 }
 
+/* Final reveal animation for the remaining name */
+.typed-name.final {
+    animation: final-pop 420ms cubic-bezier(0.2, 1, 0.3, 1) both;
+}
+
+@keyframes final-pop {
+    0% { transform: translateY(4px) scale(0.98); opacity: 0.6; }
+    60% { transform: translateY(-2px) scale(1.02); opacity: 1; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
 .typing-caret {
     display: inline-block;
     margin-left: 6px;
@@ -673,11 +684,52 @@ body {
 }
 
 .contact-icon {
-    font-size: 1.5rem;
+    display: inline-flex;
+    width: 28px;
+    height: 28px;
+    align-items: center;
+    justify-content: center;
+}
+
+.contact-icon svg {
+    width: 20px;
+    height: 20px;
+    color: var(--primary-color);
+    stroke: currentColor;
+    fill: none;
 }
 
 .contact-text {
     color: var(--text-secondary);
+}
+
+/* Make contact links look like plain text (no underline) but still accessible */
+.contact-method a.contact-text {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.18s ease, opacity 0.18s ease;
+}
+
+.contact-method a.contact-text:hover,
+.contact-method a.contact-text:focus {
+    color: var(--primary-color);
+    text-decoration: none;
+    outline: none;
+}
+
+/* Visible focus ring for keyboard users */
+.contact-method a.contact-text:focus-visible,
+.social-link:focus-visible {
+    box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.12);
+    border-radius: 6px;
+}
+
+.contact-method a.contact-text:hover {
+    font-weight: 600;
+}
+
+.social-link:hover {
+    transform: translateY(-2px);
 }
 
 .contact-form {
@@ -755,6 +807,19 @@ body {
     color: var(--text-secondary);
     text-decoration: none;
     transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+}
+
+.social-link svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    fill: none;
 }
 
 .social-link:hover {
