@@ -218,18 +218,61 @@ function showNotification(message, type = 'info') {
 function initLoadingScreen() {
     const loadingScreen = document.createElement('div');
     loadingScreen.className = 'loading';
-    loadingScreen.innerHTML = '<div class="loading-spinner"></div>';
+    loadingScreen.innerHTML = `
+        <div class="loading-typed">
+            <span class="loading-text" aria-hidden="true"></span>
+            <span class="loading-caret">|</span>
+        </div>
+    `;
     
     document.body.appendChild(loadingScreen);
     
+    // Typing loop for the loading screen: continuously type 'tai' and delete
+    const loadingText = loadingScreen.querySelector('.loading-text');
+    const loadingCaret = loadingScreen.querySelector('.loading-caret');
+    let loadIndex = 0;
+    const loadStr = 'tai';
+    const loadTypingSpeed = 120;
+    const loadDeletingSpeed = 80;
+    const pauseAfter = 500;
+    let loadingInterval;
+
+    function startLoadingTyping() {
+        // type forward
+        loadIndex = 0;
+        function stepType() {
+            if (loadIndex <= loadStr.length) {
+                loadingText.textContent = loadStr.slice(0, loadIndex);
+                loadIndex++;
+                loadingInterval = setTimeout(stepType, loadTypingSpeed);
+            } else {
+                setTimeout(() => stepDelete(loadIndex - 1), pauseAfter);
+            }
+        }
+
+        function stepDelete(idx) {
+            if (idx >= 0) {
+                loadingText.textContent = loadStr.slice(0, idx);
+                loadingInterval = setTimeout(() => stepDelete(idx - 1), loadDeletingSpeed);
+            } else {
+                // loop
+                setTimeout(stepType, 150);
+            }
+        }
+
+        stepType();
+    }
+
+    startLoadingTyping();
+
     // Remove loading screen after page load
     window.addEventListener('load', function() {
-            // Remove immediately (tiny fade) so typing shows promptly
-            loadingScreen.style.transition = 'opacity 150ms ease';
-            loadingScreen.style.opacity = '0';
-            setTimeout(() => {
-                if (document.body.contains(loadingScreen)) document.body.removeChild(loadingScreen);
-            }, 160);
+        clearTimeout(loadingInterval);
+        loadingScreen.style.transition = 'opacity 150ms ease';
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => {
+            if (document.body.contains(loadingScreen)) document.body.removeChild(loadingScreen);
+        }, 160);
     });
 }
 
