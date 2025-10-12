@@ -30,7 +30,7 @@ html {
 }
 
 body {
-    font-family: 'Frankfurt Messe', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     background-color: var(--bg-primary);
     color: var(--text-primary);
     line-height: 1.6;
@@ -67,7 +67,7 @@ body {
 }
 
 .logo-text {
-    font-family: 'Brandwire', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: 1.8rem;
     font-weight: 600;
     background: var(--gradient-primary);
@@ -149,7 +149,7 @@ body {
 }
 
 .greeting {
-    font-family: 'Frankfurt Messe', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 1.5rem;
     color: var(--text-secondary);
     display: block;
@@ -159,7 +159,7 @@ body {
 }
 
 .name {
-    font-family: 'Brandwire', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -206,7 +206,7 @@ body {
 }
 
 .hero-subtitle {
-    font-family: 'Sevilla Decor X', cursive;
+    font-family: 'Dancing Script', cursive;
     font-size: 1.5rem;
     color: var(--accent-color);
     margin-bottom: 1.5rem;
@@ -320,7 +320,7 @@ body {
 }
 
 .section-title {
-    font-family: 'Brandwire', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: 3rem;
     text-align: center;
     margin-bottom: 3rem;
@@ -372,7 +372,7 @@ body {
 }
 
 .stat-number {
-    font-family: 'Brandwire', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: 2.5rem;
     font-weight: 600;
     color: var(--primary-color);
