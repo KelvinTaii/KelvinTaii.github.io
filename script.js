@@ -224,12 +224,12 @@ function initLoadingScreen() {
     
     // Remove loading screen after page load
     window.addEventListener('load', function() {
-        setTimeout(() => {
+            // Remove immediately (tiny fade) so typing shows promptly
+            loadingScreen.style.transition = 'opacity 150ms ease';
             loadingScreen.style.opacity = '0';
             setTimeout(() => {
-                document.body.removeChild(loadingScreen);
-            }, 500);
-        }, 1000);
+                if (document.body.contains(loadingScreen)) document.body.removeChild(loadingScreen);
+            }, 160);
     });
 }
 
@@ -250,27 +250,58 @@ function initParallaxEffects() {
 
 // Typing animation for hero title
 function initTypingAnimation() {
-    console.log('Starting name animation...');
-    const lastNameElement = document.querySelector('.last-name');
-    console.log('Last name element:', lastNameElement);
-    
-    if (lastNameElement) {
-        // Hide it initially
-        lastNameElement.style.opacity = '0';
-        lastNameElement.style.transform = 'translateX(-20px)';
-        lastNameElement.style.transition = 'none';
-        
-        console.log('Hidden last name, waiting 1.5 seconds...');
-        
-        // Show it after 1.5 seconds
-        setTimeout(() => {
-            console.log('Showing last name now!');
-            lastNameElement.style.transition = 'all 0.8s ease-in-out';
-            lastNameElement.style.opacity = '1';
-            lastNameElement.style.transform = 'translateX(0)';
-        }, 1500);
+    // Polished typing: type 'kelvin tai' (lowercase) left-to-right then backspace right-to-left
+    // until 'tai' remains. This follows the more common pattern used in hero animations.
+    const typedEl = document.querySelector('.typed-name');
+    const caretEl = document.querySelector('.typing-caret');
+    if (!typedEl) return;
+
+    const full = 'kelvin tai';
+    const finalKeep = 'tai';
+    const typingSpeed = 90; // ms per character when typing (slightly faster)
+    const backspaceSpeed = 60; // ms per character when backspacing
+    const pauseAfterFull = 700; // pause after full name typed
+
+    function startAnimation() {
+        let i = 0;
+
+        function typeNext() {
+            if (i <= full.length) {
+                typedEl.textContent = full.slice(0, i);
+                i++;
+                setTimeout(typeNext, typingSpeed);
+            } else {
+                // fully typed, then delete characters from the left until finalKeep remains
+                setTimeout(() => deleteFromLeft(0), pauseAfterFull);
+            }
+        }
+
+        // Delete characters from the left until only finalKeep remains
+        function deleteFromLeft(leftIndex) {
+            const remaining = full.slice(leftIndex);
+            // when remaining equals finalKeep, we're done
+            if (remaining.toLowerCase() === finalKeep) {
+                typedEl.textContent = finalKeep;
+                setTimeout(() => { if (caretEl) caretEl.style.opacity = '0'; }, 300);
+                return;
+            }
+
+            // show the current remaining string and schedule next left deletion
+            typedEl.textContent = remaining;
+            setTimeout(() => deleteFromLeft(leftIndex + 1), backspaceSpeed);
+        }
+
+        // start typing
+        typedEl.textContent = '';
+        if (caretEl) { caretEl.style.opacity = '1'; caretEl.style.transition = 'opacity 160ms ease'; }
+        setTimeout(typeNext, 60);
+    }
+
+    // Start when DOM content loaded so animation runs promptly
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        startAnimation();
     } else {
-        console.error('Last name element not found!');
+        document.addEventListener('DOMContentLoaded', startAnimation);
     }
 }
 

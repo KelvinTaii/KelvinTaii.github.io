@@ -77,6 +77,7 @@ body {
     top: 0;
     width: 100%;
     background: rgba(10, 10, 10, 0.95);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     z-index: 1000;
     transition: var(--transition);
@@ -202,6 +203,33 @@ body {
 .last-name {
     display: inline-block;
     font-size: 0.7em;
+}
+
+/* Typing animation styles */
+.typed-name {
+    display: inline-block;
+    color: transparent; /* will show gradient via background-clip */
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    font-weight: 600;
+    font-size: 1em;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.typing-caret {
+    display: inline-block;
+    margin-left: 6px;
+    color: var(--text-primary);
+    opacity: 1;
+    animation: blink-caret 1s steps(1) infinite;
+    transform: translateY(-2px);
+}
+
+@keyframes blink-caret {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
 }
 
 .hero-subtitle {
