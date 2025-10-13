@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initLoadingScreen();
     initParallaxEffects();
     initTypingAnimation();
+    initTimeline();
 });
 
 // Navigation functionality
@@ -80,6 +81,62 @@ function initNavigation() {
             }
         });
     });
+}
+
+// Timeline interaction: desktop uses left list + right details; mobile shows inline details
+function initTimeline() {
+    const items = document.querySelectorAll('.timeline-item');
+    if (!items || items.length === 0) return;
+
+    function activateItem(item) {
+        // deselect all
+        items.forEach(i => {
+            i.setAttribute('aria-selected', 'false');
+        });
+
+        item.setAttribute('aria-selected', 'true');
+        const panelId = item.getAttribute('data-panel');
+        const panels = document.querySelectorAll('.timeline-details .panel');
+        panels.forEach(p => {
+            if (p.id === panelId) p.removeAttribute('hidden'); else p.setAttribute('hidden', '');
+        });
+    }
+
+    items.forEach(item => {
+        item.addEventListener('click', function(e) {
+            // On small screens, toggle mobile details
+            if (window.innerWidth <= 991) {
+                const details = item.querySelector('.timeline-mobile-details');
+                if (details) {
+                    const isVisible = details.style.display === 'block';
+                    details.style.display = isVisible ? 'none' : 'block';
+                }
+                return;
+            }
+            activateItem(item);
+        });
+
+        item.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                item.click();
+            }
+            // Arrow navigation
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                const next = item.nextElementSibling || items[0];
+                next.focus();
+            }
+            if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                const prev = item.previousElementSibling || items[items.length -1];
+                prev.focus();
+            }
+        });
+    });
+
+    // activate first item by default
+    activateItem(items[0]);
 }
 
 // Scroll animations

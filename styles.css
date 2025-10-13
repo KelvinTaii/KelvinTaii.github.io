@@ -361,6 +361,104 @@ body {
     background: var(--bg-secondary);
 }
 
+/* Timeline Section */
+.timeline {
+    background: transparent;
+}
+
+.timeline-inner {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.timeline-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 320px;
+}
+
+.timeline-item {
+    padding: 1rem;
+    border-left: 3px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    background: transparent;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.14s ease;
+}
+
+.timeline-item:focus,
+.timeline-item[aria-selected="true"],
+.timeline-item:hover {
+    outline: none;
+    background: rgba(255,255,255,0.02);
+    border-left-color: var(--primary-color);
+    transform: translateX(4px);
+}
+
+.timeline-item-label {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.timeline-item-date {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 6px;
+}
+
+.timeline-mobile-details {
+    display: none;
+    margin-top: 8px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.timeline-details {
+    flex: 1;
+    min-height: 180px;
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.timeline-details .panel {
+    display: block;
+}
+
+.timeline-details .panel[hidden] {
+    display: none;
+}
+
+/* Responsive: on small screens, stack as accordion */
+@media (max-width: 991px) {
+    .timeline-inner {
+        display: block;
+    }
+    .timeline-items {
+        width: 100%;
+    }
+    .timeline-item {
+        border-left: none;
+        border-radius: 10px;
+        background: var(--bg-secondary);
+        padding: 1rem;
+    }
+    .timeline-item[aria-selected="true"] {
+        border-left: none;
+    }
+    .timeline-item .timeline-mobile-details {
+        display: block;
+    }
+    .timeline-details {
+        display: none; /* hide side panel on mobile; show inline content */
+    }
+}
+
 .about-content {
     display: grid;
     grid-template-columns: 2fr 1fr;
