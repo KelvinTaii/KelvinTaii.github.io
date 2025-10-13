@@ -141,6 +141,20 @@ body {
     z-index: 2;
 }
 
+/* On large screens, nudge the hero content right so its left edge aligns
+   more visually with the logo in the nav. This keeps mobile centered but
+   prevents the hero content from touching the viewport edge on wide layouts. */
+@media (min-width: 992px) {
+    .hero {
+        padding-left: 0; /* allow manual offset inside hero-content */
+    }
+    .hero-content {
+        /* calculate a comfortable offset: nav left padding (20px) + logo width
+           + some breathing room. Keep it maxed so content doesn't overflow. */
+        margin-left: calc((100% - 1200px) / 2 + 70px);
+    }
+}
+
 .hero-title {
     font-size: 4rem;
     font-weight: 700;
