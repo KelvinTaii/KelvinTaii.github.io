@@ -7,11 +7,13 @@ document.addEventListener('DOMContentLoaded', function() {
     initNavigation();
     initScrollAnimations();
     initSkillBars();
+    initSkillGrid();
     initContactForm();
     initLoadingScreen();
     initParallaxEffects();
     initTypingAnimation();
     initTimeline();
+    initSkillTabs();
 });
 
 // Navigation functionality
@@ -237,6 +239,51 @@ function initScrollAnimations() {
     });
 }
 
+// Variant B: initialize skill tabs and panel switching
+function initSkillTabs() {
+    const tablists = document.querySelectorAll('.tabs');
+    if (!tablists || tablists.length === 0) return;
+
+    tablists.forEach(list => {
+        const tabs = Array.from(list.querySelectorAll('[role="tab"]'));
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => activateTab(tab));
+            tab.addEventListener('keydown', (e) => {
+                let idx = tabs.indexOf(tab);
+                if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const next = tabs[(idx + 1) % tabs.length]; next.focus();
+                }
+                if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    const prev = tabs[(idx - 1 + tabs.length) % tabs.length]; prev.focus();
+                }
+                if (e.key === 'Home') { e.preventDefault(); tabs[0].focus(); }
+                if (e.key === 'End') { e.preventDefault(); tabs[tabs.length - 1].focus(); }
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activateTab(tab); }
+            });
+        });
+    });
+
+    function activateTab(tab) {
+        // Deselect all tabs globally so only one panel visible
+        const allTabs = document.querySelectorAll('[role="tab"]');
+        allTabs.forEach(t => t.setAttribute('aria-selected', 'false'));
+        tab.setAttribute('aria-selected', 'true');
+
+        // hide all panels, then show the one for this tab
+        const panels = document.querySelectorAll('.skills-panel');
+        panels.forEach(p => p.setAttribute('hidden', ''));
+        const panelId = tab.getAttribute('data-panel');
+        const panel = document.getElementById(panelId);
+        if (panel) panel.removeAttribute('hidden');
+    }
+
+    // Activate first selected or default
+    const first = document.querySelector('[role="tab"][aria-selected="true"]') || document.querySelector('[role="tab"]');
+    if (first) activateTab(first);
+}
+
 // Skill bars animation
 function initSkillBars() {
     const skillBars = document.querySelectorAll('.skill-progress');
@@ -259,6 +306,38 @@ function initSkillBars() {
     skillBars.forEach(bar => {
         skillObserver.observe(bar);
     });
+}
+
+// Variant A: animate grid skill cards' progress bars when they appear
+function initSkillGrid() {
+    const cards = document.querySelectorAll('.skill-card');
+    if (!cards || cards.length === 0) return;
+
+    const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+
+            const card = entry.target;
+            const percent = parseInt(card.getAttribute('data-percent') || '0', 10);
+            const bar = card.querySelector('.skill-bar');
+            const fill = card.querySelector('.skill-bar-fill');
+
+            if (fill) {
+                // set width to percent and let CSS handle the transition
+                fill.style.width = percent + '%';
+            }
+
+            if (bar) {
+                // update accessible value
+                bar.setAttribute('aria-valuenow', String(percent));
+            }
+
+            // stop observing this card so animation runs only once
+            obs.unobserve(card);
+        });
+    }, { threshold: 0.35 });
+
+    cards.forEach(c => observer.observe(c));
 }
 
 // Contact form functionality
