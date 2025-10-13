@@ -88,32 +88,64 @@ function initTimeline() {
     const items = document.querySelectorAll('.timeline-item');
     if (!items || items.length === 0) return;
 
-    function activateItem(item) {
+    const panels = document.querySelectorAll('.timeline-details .panel');
+
+    function activateItem(item, pushState = false) {
         // deselect all
         items.forEach(i => {
             i.setAttribute('aria-selected', 'false');
+            i.classList.remove('open');
+            i.setAttribute('aria-expanded', 'false');
         });
 
         item.setAttribute('aria-selected', 'true');
+        item.classList.add('open');
+        item.setAttribute('aria-expanded', 'true');
+
         const panelId = item.getAttribute('data-panel');
-        const panels = document.querySelectorAll('.timeline-details .panel');
         panels.forEach(p => {
             if (p.id === panelId) p.removeAttribute('hidden'); else p.setAttribute('hidden', '');
         });
+
+        if (pushState && history && history.replaceState) {
+            history.replaceState({}, '', `#${item.id}`);
+        }
+        // focus the associated panel for keyboard/screen-reader users
+        const panelEl = document.getElementById(panelId);
+        if (panelEl) {
+            panelEl.setAttribute('tabindex', '-1');
+            panelEl.focus({ preventScroll: true });
+            // small scroll so the panel is visible nicely
+            setTimeout(() => panelEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 40);
+        }
+        // update the left connector highlight height (desktop)
+        updateConnectorToItem(item);
+    }
+
+    function toggleMobileItem(item) {
+        const isOpen = item.classList.contains('open');
+        if (isOpen) {
+            item.classList.remove('open');
+            item.setAttribute('aria-expanded', 'false');
+        } else {
+            // close others for accordion behavior
+            items.forEach(i => { i.classList.remove('open'); i.setAttribute('aria-expanded','false'); });
+            item.classList.add('open');
+            item.setAttribute('aria-expanded', 'true');
+            // ensure the opened item is visible
+            setTimeout(() => item.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
+        }
     }
 
     items.forEach(item => {
+        item.setAttribute('aria-expanded', item.getAttribute('aria-selected') === 'true' ? 'true' : 'false');
+
         item.addEventListener('click', function(e) {
-            // On small screens, toggle mobile details
             if (window.innerWidth <= 991) {
-                const details = item.querySelector('.timeline-mobile-details');
-                if (details) {
-                    const isVisible = details.style.display === 'block';
-                    details.style.display = isVisible ? 'none' : 'block';
-                }
+                toggleMobileItem(item);
                 return;
             }
-            activateItem(item);
+            activateItem(item, true);
         });
 
         item.addEventListener('keydown', function(e) {
@@ -135,8 +167,51 @@ function initTimeline() {
         });
     });
 
-    // activate first item by default
-    activateItem(items[0]);
+    // Activate from hash if present
+    const hash = window.location.hash.replace('#', '');
+    if (hash) {
+        const byHash = document.getElementById(hash);
+        if (byHash && byHash.classList.contains('timeline-item')) {
+            activateItem(byHash);
+        } else {
+            activateItem(items[0]);
+        }
+    } else {
+        activateItem(items[0]);
+    }
+
+    // When resizing to desktop, close mobile-only open states and ensure panel matches selected
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 991) {
+            // ensure panels reflect aria-selected
+            const selected = document.querySelector('.timeline-item[aria-selected="true"]');
+            if (selected) activateItem(selected);
+        } else {
+            // hide details panel on small screens
+            panels.forEach(p => p.setAttribute('hidden', ''));
+        }
+    });
+
+    // update connector when the left column scrolls (sticky container)
+    const leftCol = document.querySelector('.timeline-items');
+    if (leftCol) {
+        leftCol.addEventListener('scroll', function() {
+            const selected = document.querySelector('.timeline-item[aria-selected="true"]');
+            if (selected) updateConnectorToItem(selected);
+        });
+    }
+
+    function updateConnectorToItem(item) {
+        // compute from top of left column to the center of item's dot
+        const left = document.querySelector('.timeline-items');
+        if (!left || window.innerWidth <= 991) return;
+        const leftRect = left.getBoundingClientRect();
+        const itemRect = item.getBoundingClientRect();
+        // center of dot relative to left top
+        const dotY = (itemRect.top - leftRect.top) + (itemRect.height * 0.18) + 8; // tuned offset
+        const height = Math.max(0, dotY + 8) + 'px';
+        document.documentElement.style.setProperty('--timeline-active-height', height);
+    }
 }
 
 // Scroll animations
