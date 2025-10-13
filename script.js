@@ -3,6 +3,21 @@
 // Description: Interactive features and animations for portfolio website
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Prevent browser from auto-jumping to a fragment identifier on initial load.
+    // If there's a hash in the URL we temporarily remove it (without creating a new history entry)
+    // and restore it after initialization using replaceState (which does not scroll).
+    try {
+        const initialHash = window.location.hash;
+        if (initialHash && history && history.replaceState) {
+            // remove the fragment so the browser won't scroll to it during load
+            history.replaceState(null, '', window.location.pathname + window.location.search);
+            // save to restore later
+            window.__initialFragment = initialHash;
+        }
+    } catch (e) {
+        // ignore errors (older browsers)
+    }
+
     // Initialize all functionality
     initNavigation();
     initScrollAnimations();
@@ -15,6 +30,16 @@ document.addEventListener('DOMContentLoaded', function() {
     initTimeline();
     initSplitTimeline();
     initSkillTabs();
+
+    // Restore fragment in URL without causing a scroll (replaceState doesn't trigger scrolling)
+    try {
+        if (window.__initialFragment && history && history.replaceState) {
+            history.replaceState(null, '', window.location.pathname + window.location.search + window.__initialFragment);
+            delete window.__initialFragment;
+        }
+    } catch (e) {
+        // ignore
+    }
 });
 
 // Navigation functionality
