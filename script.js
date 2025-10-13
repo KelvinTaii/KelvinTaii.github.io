@@ -129,7 +129,7 @@ function initTimeline() {
 
     const panels = document.querySelectorAll('.timeline-details .panel');
 
-    function activateItem(item, pushState = false) {
+    function activateItem(item, pushState = false, doScroll = true) {
         // deselect all
         items.forEach(i => {
             i.setAttribute('aria-selected', 'false');
@@ -154,8 +154,10 @@ function initTimeline() {
         if (panelEl) {
             panelEl.setAttribute('tabindex', '-1');
             panelEl.focus({ preventScroll: true });
-            // small scroll so the panel is visible nicely
-            setTimeout(() => panelEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 40);
+            // small scroll so the panel is visible nicely for interactive activations
+            if (doScroll) {
+                setTimeout(() => panelEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 40);
+            }
         }
         // update the left connector highlight height (desktop)
         updateConnectorToItem(item);
@@ -212,19 +214,21 @@ function initTimeline() {
     if (hash) {
         const byHash = document.getElementById(hash);
         if (byHash && byHash.classList.contains('timeline-item')) {
-            activateItem(byHash);
+            // activate without forcing a scroll on initial load
+            activateItem(byHash, false, false);
         } else {
-            activateItem(items[0]);
+            activateItem(items[0], false, false);
         }
     } else {
-        activateItem(items[0]);
+        // ensure initial activation does not jump the page away from the hero
+        activateItem(items[0], false, false);
     }
 
     // When resizing to desktop, close mobile-only open states and ensure panel matches selected
     window.addEventListener('resize', function() {
         // Ensure panels reflect aria-selected on resize
         const selected = document.querySelector('.timeline-item[aria-selected="true"]');
-        if (selected) activateItem(selected);
+        if (selected) activateItem(selected, false, false);
     });
 
     // update connector when the left column scrolls (sticky container)
