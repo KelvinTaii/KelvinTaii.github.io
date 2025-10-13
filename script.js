@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initParallaxEffects();
     initTypingAnimation();
     initTimeline();
+    initSplitTimeline();
     initSkillTabs();
 });
 
@@ -85,6 +86,42 @@ function initNavigation() {
     });
 }
 
+// Minimal timeline tab switching for the split timeline
+function initSplitTimeline() {
+    const tabs = Array.from(document.querySelectorAll('.timeline-tab'));
+    if (!tabs.length) return;
+
+    function activate(tab) {
+        tabs.forEach(t => {
+            t.setAttribute('aria-selected', 'false');
+            t.setAttribute('tabindex', '-1');
+        });
+        const panelId = tab.getAttribute('aria-controls');
+        const panels = document.querySelectorAll('.timeline-panel');
+        panels.forEach(p => p.setAttribute('hidden', ''));
+
+        tab.setAttribute('aria-selected', 'true');
+        tab.setAttribute('tabindex', '0');
+        const panel = document.getElementById(panelId);
+        if (panel) panel.removeAttribute('hidden');
+        if (panel) { panel.setAttribute('tabindex','-1'); panel.focus({preventScroll:true}); }
+    }
+
+    tabs.forEach((tab, i) => {
+        tab.addEventListener('click', () => activate(tab));
+        tab.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); tabs[(i+1)%tabs.length].focus(); }
+            if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); tabs[(i-1+tabs.length)%tabs.length].focus(); }
+            if (e.key === 'Home') { e.preventDefault(); tabs[0].focus(); }
+            if (e.key === 'End') { e.preventDefault(); tabs[tabs.length-1].focus(); }
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(tab); }
+        });
+    });
+
+    // Activate first tab by default
+    activate(tabs[0]);
+}
+
 // Timeline interaction: desktop uses left list + right details; mobile shows inline details
 function initTimeline() {
     const items = document.querySelectorAll('.timeline-item');
@@ -122,6 +159,10 @@ function initTimeline() {
         }
         // update the left connector highlight height (desktop)
         updateConnectorToItem(item);
+
+        // apply a visible focus highlight for keyboard users
+        items.forEach(i => i.classList.remove('focused'));
+        item.classList.add('focused');
     }
 
     function toggleMobileItem(item) {
@@ -143,10 +184,7 @@ function initTimeline() {
         item.setAttribute('aria-expanded', item.getAttribute('aria-selected') === 'true' ? 'true' : 'false');
 
         item.addEventListener('click', function(e) {
-            if (window.innerWidth <= 991) {
-                toggleMobileItem(item);
-                return;
-            }
+            // Always activate the right-side panel for consistency (no duplicate mobile content)
             activateItem(item, true);
         });
 
@@ -184,14 +222,9 @@ function initTimeline() {
 
     // When resizing to desktop, close mobile-only open states and ensure panel matches selected
     window.addEventListener('resize', function() {
-        if (window.innerWidth > 991) {
-            // ensure panels reflect aria-selected
-            const selected = document.querySelector('.timeline-item[aria-selected="true"]');
-            if (selected) activateItem(selected);
-        } else {
-            // hide details panel on small screens
-            panels.forEach(p => p.setAttribute('hidden', ''));
-        }
+        // Ensure panels reflect aria-selected on resize
+        const selected = document.querySelector('.timeline-item[aria-selected="true"]');
+        if (selected) activateItem(selected);
     });
 
     // update connector when the left column scrolls (sticky container)
@@ -209,9 +242,14 @@ function initTimeline() {
         if (!left || window.innerWidth <= 991) return;
         const leftRect = left.getBoundingClientRect();
         const itemRect = item.getBoundingClientRect();
-        // center of dot relative to left top
-        const dotY = (itemRect.top - leftRect.top) + (itemRect.height * 0.18) + 8; // tuned offset
-        const height = Math.max(0, dotY + 8) + 'px';
+        // compute center using the new pill element if present
+        const pill = item.querySelector('.timeline-pill');
+        let dotCenter = itemRect.top - leftRect.top + (itemRect.height / 2);
+        if (pill) {
+            const pillRect = pill.getBoundingClientRect();
+            dotCenter = (pillRect.top - leftRect.top) + (pillRect.height / 2);
+        }
+        const height = Math.max(0, dotCenter + 8) + 'px';
         document.documentElement.style.setProperty('--timeline-active-height', height);
     }
 }
