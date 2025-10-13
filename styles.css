@@ -459,6 +459,84 @@ body {
     }
 }
 
+/* Alternate background colors for top-level sections so they follow an alternating pattern
+   (hero, about, timeline, projects, skills, contact...). This improves visual separation. */
+body > section:nth-of-type(odd) {
+    background: var(--bg-primary);
+}
+
+body > section:nth-of-type(even) {
+    background: var(--bg-secondary);
+}
+
+/* Timeline visual improvements */
+.timeline-inner {
+    align-items: flex-start;
+}
+
+.timeline-items {
+    position: relative;
+    padding-left: 28px; /* space for the vertical line */
+}
+
+.timeline-items::before {
+    /* vertical connector line on desktop */
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+    border-radius: 2px;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 18px; /* leave space for dot */
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 18px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    border: 2px solid rgba(255,255,255,0.06);
+    transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+    transform: translateX(0);
+}
+
+.timeline-item[aria-selected="true"]::before,
+.timeline-item:focus::before,
+.timeline-item:hover::before {
+    background: var(--primary-color);
+    box-shadow: 0 6px 18px rgba(0, 212, 255, 0.12);
+    transform: scale(1.15);
+    border-color: rgba(0,0,0,0.2);
+}
+
+.timeline-details {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    border: 1px solid rgba(255,255,255,0.04);
+    box-shadow: 0 6px 30px rgba(0,0,0,0.45);
+}
+
+.timeline-details .panel h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+}
+
+/* Hide the decorative vertical connector on small screens (accordion mode) */
+@media (max-width: 991px) {
+    .timeline-items::before { display: none; }
+    .timeline-items { padding-left: 0; }
+    .timeline-item::before { display: none; }
+}
+
 .about-content {
     display: grid;
     grid-template-columns: 2fr 1fr;
