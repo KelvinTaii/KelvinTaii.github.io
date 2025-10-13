@@ -454,10 +454,55 @@ function initContactForm() {
             // Helper to actually POST the FormData
             function doPost(formDataToSend) {
                 const action = form.getAttribute('action') || 'https://api.web3forms.com/submit';
+                // Log the request target and field names (not values) to help debugging
+                try {
+                    const keys = [];
+                    for (const pair of formDataToSend.entries()) keys.push(pair[0]);
+                    console.debug('Submitting contact form to', action, 'fields:', keys);
+                } catch (e) {}
+
                 return fetch(action, {
                     method: 'POST',
                     body: formDataToSend,
                     headers: { 'Accept': 'application/json' }
+                });
+            }
+
+            // Unified handler that consumes a fetch promise and handles success/error
+            function handlePostPromise(promise) {
+                promise.then(async (res) => {
+                    let text = null;
+                    try { text = await res.text(); } catch (e) { text = null; }
+                    // Try parse JSON if possible
+                    let json = null;
+                    try { json = text ? JSON.parse(text) : null; } catch (e) { json = null; }
+
+                    if (!res.ok) {
+                        console.error('Form submit HTTP error', res.status, res.statusText, text);
+                        const serverMessage = (json && json.message) ? json.message : (text || res.statusText);
+                        showNotification('Submission failed: ' + serverMessage, 'error');
+                        return;
+                    }
+
+                    // Success path (res.ok)
+                    if (json && json.success) {
+                        showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
+                        form.reset();
+                    } else if (json && !json.success) {
+                        const msg = json.message || JSON.stringify(json);
+                        console.warn('Form submit returned non-success JSON', json);
+                        showNotification('Submission problem: ' + msg, 'error');
+                    } else {
+                        // If no JSON, assume text response is okay
+                        console.info('Form submit raw response', text);
+                        showNotification('Message sent (no JSON response).', 'success');
+                        form.reset();
+                    }
+                }).catch((err) => {
+                    console.error('Form submit error', err);
+                    showNotification('Submission failed (network). Please check console for details.', 'error');
+                }).finally(() => {
+                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalBtnText || 'Send Message'; }
                 });
             }
 
@@ -468,21 +513,7 @@ function initContactForm() {
                 window.grecaptcha.ready(() => {
                     window.grecaptcha.execute(recaptchaSiteKey, { action: 'contact' }).then(function(token) {
                         formData.set('g-recaptcha-response', token);
-                        doPost(formData).then(async (res) => {
-                            if (!res.ok) throw new Error('Network response was not ok');
-                            const json = await res.json();
-                            if (json.success) {
-                                showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-                                form.reset();
-                            } else {
-                                showNotification((json.message) ? json.message : 'Submission failed. Please try again later.', 'error');
-                            }
-                        }).catch(err => {
-                            console.error('Form submit error', err);
-                            showNotification('Submission failed. Please try again later.', 'error');
-                        }).finally(() => {
-                            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalBtnText || 'Send Message'; }
-                        });
+                        handlePostPromise(doPost(formData));
                     });
                 });
             } else if (recaptchaSiteKey && !window.grecaptcha) {
@@ -496,21 +527,7 @@ function initContactForm() {
                         window.grecaptcha.ready(() => {
                             window.grecaptcha.execute(recaptchaSiteKey, { action: 'contact' }).then(function(token) {
                                 formData.set('g-recaptcha-response', token);
-                                doPost(formData).then(async (res) => {
-                                    if (!res.ok) throw new Error('Network response was not ok');
-                                    const json = await res.json();
-                                    if (json.success) {
-                                        showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-                                        form.reset();
-                                    } else {
-                                        showNotification((json.message) ? json.message : 'Submission failed. Please try again later.', 'error');
-                                    }
-                                }).catch(err => {
-                                    console.error('Form submit error', err);
-                                    showNotification('Submission failed. Please try again later.', 'error');
-                                }).finally(() => {
-                                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalBtnText || 'Send Message'; }
-                                });
+                                handlePostPromise(doPost(formData));
                             });
                         });
                     } else {
@@ -521,21 +538,7 @@ function initContactForm() {
                 document.head.appendChild(script);
             } else {
                 // No reCAPTCHA requested — post directly
-                doPost(formData).then(async (res) => {
-                    if (!res.ok) throw new Error('Network response was not ok');
-                    const json = await res.json();
-                    if (json.success) {
-                        showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-                        form.reset();
-                    } else {
-                        showNotification((json.message) ? json.message : 'Submission failed. Please try again later.', 'error');
-                    }
-                }).catch((err) => {
-                    console.error('Form submit error', err);
-                    showNotification('Submission failed. Please try again later.', 'error');
-                }).finally(() => {
-                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalBtnText || 'Send Message'; }
-                });
+                handlePostPromise(doPost(formData));
             }
         });
     }
