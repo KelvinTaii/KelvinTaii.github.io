@@ -42,6 +42,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Safety: if a loading overlay remains for any reason, remove it when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    const loading = document.querySelector('.loading');
+    if (loading && document.body.contains(loading)) {
+        try { loading.parentElement.removeChild(loading); } catch (e) {}
+    }
+});
+
 // Navigation functionality
 function initNavigation() {
     const hamburger = document.querySelector('.hamburger');
@@ -414,28 +422,121 @@ function initContactForm() {
     if (form) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            // Get form data
+
             const formData = new FormData(form);
             const name = formData.get('name');
             const email = formData.get('email');
             const subject = formData.get('subject');
             const message = formData.get('message');
-            
+            const botcheck = formData.get('botcheck');
+
+            // Honeypot check
+            if (botcheck) {
+                // silently ignore spam
+                return;
+            }
+
             // Simple validation
             if (!name || !email || !subject || !message) {
                 showNotification('Please fill in all fields', 'error');
                 return;
             }
-            
             if (!isValidEmail(email)) {
                 showNotification('Please enter a valid email address', 'error');
                 return;
             }
-            
-            // Simulate form submission
-            showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-            form.reset();
+
+            // UI: disable submit button while posting
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn ? submitBtn.textContent : null;
+            if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending...'; }
+
+            // Helper to actually POST the FormData
+            function doPost(formDataToSend) {
+                const action = form.getAttribute('action') || 'https://api.web3forms.com/submit';
+                return fetch(action, {
+                    method: 'POST',
+                    body: formDataToSend,
+                    headers: { 'Accept': 'application/json' }
+                });
+            }
+
+            // If the form requests reCAPTCHA v3, load script and fetch token first
+            const recaptchaSiteKey = form.getAttribute('data-recaptcha-sitekey') || form.dataset.recaptchaSitekey;
+            if (recaptchaSiteKey && window.grecaptcha) {
+                // grecaptcha already available
+                window.grecaptcha.ready(() => {
+                    window.grecaptcha.execute(recaptchaSiteKey, { action: 'contact' }).then(function(token) {
+                        formData.set('g-recaptcha-response', token);
+                        doPost(formData).then(async (res) => {
+                            if (!res.ok) throw new Error('Network response was not ok');
+                            const json = await res.json();
+                            if (json.success) {
+                                showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
+                                form.reset();
+                            } else {
+                                showNotification((json.message) ? json.message : 'Submission failed. Please try again later.', 'error');
+                            }
+                        }).catch(err => {
+                            console.error('Form submit error', err);
+                            showNotification('Submission failed. Please try again later.', 'error');
+                        }).finally(() => {
+                            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalBtnText || 'Send Message'; }
+                        });
+                    });
+                });
+            } else if (recaptchaSiteKey && !window.grecaptcha) {
+                // Load grecaptcha script dynamically then execute
+                const script = document.createElement('script');
+                script.src = `https://www.google.com/recaptcha/api.js?render=${recaptchaSiteKey}`;
+                script.async = true;
+                script.defer = true;
+                script.onload = function() {
+                    if (window.grecaptcha) {
+                        window.grecaptcha.ready(() => {
+                            window.grecaptcha.execute(recaptchaSiteKey, { action: 'contact' }).then(function(token) {
+                                formData.set('g-recaptcha-response', token);
+                                doPost(formData).then(async (res) => {
+                                    if (!res.ok) throw new Error('Network response was not ok');
+                                    const json = await res.json();
+                                    if (json.success) {
+                                        showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
+                                        form.reset();
+                                    } else {
+                                        showNotification((json.message) ? json.message : 'Submission failed. Please try again later.', 'error');
+                                    }
+                                }).catch(err => {
+                                    console.error('Form submit error', err);
+                                    showNotification('Submission failed. Please try again later.', 'error');
+                                }).finally(() => {
+                                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalBtnText || 'Send Message'; }
+                                });
+                            });
+                        });
+                    } else {
+                        // fallback to posting without token
+                        doPost(formData);
+                    }
+                };
+                document.head.appendChild(script);
+            } else {
+                // No reCAPTCHA requested — post directly
+                doPost(formData).then(async (res) => {
+                    if (!res.ok) throw new Error('Network response was not ok');
+                    const json = await res.json();
+                    if (json.success) {
+                        showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
+                        form.reset();
+                    } else {
+                        showNotification((json.message) ? json.message : 'Submission failed. Please try again later.', 'error');
+                    }
+                }).catch((err) => {
+                    console.error('Form submit error', err);
+                    showNotification('Submission failed. Please try again later.', 'error');
+                }).finally(() => {
+                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalBtnText || 'Send Message'; }
+                });
+            }
         });
     }
 }
@@ -552,6 +653,16 @@ function initLoadingScreen() {
             if (document.body.contains(loadingScreen)) document.body.removeChild(loadingScreen);
         }, 160);
     });
+
+    // Safety fallback: if the page doesn't fire load (ad blockers etc.), remove after 6s
+    setTimeout(() => {
+        if (document.body.contains(loadingScreen)) {
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+                if (document.body.contains(loadingScreen)) document.body.removeChild(loadingScreen);
+            }, 180);
+        }
+    }, 6000);
 }
 
 // Parallax effects
