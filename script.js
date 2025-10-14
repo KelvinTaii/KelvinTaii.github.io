@@ -7,6 +7,29 @@
 window.__isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
 
 document.addEventListener('DOMContentLoaded', function() {
+
+// Monkey-patch Element.focus to prevent scripts from stealing focus while
+// visuals are suspended (we still allow native/user-initiated focus and
+// focus on form controls). This is a temporary mitigation for mobile keyboard
+// flicker during debugging.
+try {
+    const _origFocus = Element.prototype.focus;
+    Element.prototype.focus = function() {
+        try {
+            // If visuals are suspended, block focus on non-form elements
+            if (window.__suspendVisuals) {
+                const tag = (this && this.tagName) ? this.tagName.toUpperCase() : '';
+                if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+                    try { showMobileDebug && showMobileDebug(`blocked programmatic focus -> ${tag} ${this.id||''} ${this.name||''}`); } catch(e){}
+                    return; // noop
+                }
+            }
+        } catch (e) {}
+        return _origFocus.apply(this, arguments);
+    };
+} catch (e) {
+    // ignore if environment prohibits patching
+}
     // Prevent browser from auto-jumping to a fragment identifier on initial load.
     // If there's a hash in the URL we temporarily remove it (without creating a new history entry)
     // and restore it after initialization using replaceState (which does not scroll).
