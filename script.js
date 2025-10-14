@@ -164,7 +164,12 @@ function initSplitTimeline() {
         tab.setAttribute('tabindex', '0');
         const panel = document.getElementById(panelId);
         if (panel) panel.removeAttribute('hidden');
-        if (panel) { panel.setAttribute('tabindex','-1'); panel.focus({preventScroll:true}); }
+        if (panel) {
+            panel.setAttribute('tabindex','-1');
+            if (!window.__suspendVisuals) {
+                panel.focus({ preventScroll: true });
+            }
+        }
     }
 
     tabs.forEach((tab, i) => {
@@ -213,7 +218,7 @@ function initTimeline() {
         const panelEl = document.getElementById(panelId);
         if (panelEl) {
             panelEl.setAttribute('tabindex', '-1');
-            panelEl.focus({ preventScroll: true });
+            if (!window.__suspendVisuals) panelEl.focus({ preventScroll: true });
             // small scroll so the panel is visible nicely for interactive activations
             if (doScroll) {
                 setTimeout(() => panelEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 40);
