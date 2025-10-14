@@ -428,13 +428,6 @@ function initContactForm() {
             const email = formData.get('email');
             const subject = formData.get('subject');
             const message = formData.get('message');
-            const botcheck = formData.get('botcheck');
-
-            // Honeypot check
-            if (botcheck) {
-                // silently ignore spam
-                return;
-            }
 
             // Simple validation
             if (!name || !email || !subject || !message) {
