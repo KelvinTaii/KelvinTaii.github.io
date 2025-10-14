@@ -606,47 +606,7 @@ function initContactForm() {
     }
 }
 
-// Mobile diagnostics: small on-page panel to record touch/focus events during testing
-function ensureMobileDebugPanel() {
-    if (window.__mobileDebugPanel) return window.__mobileDebugPanel;
-    const panel = document.createElement('div');
-    panel.id = 'mobile-debug-panel';
-    panel.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;max-height:40vh;overflow:auto;background:rgba(0,0,0,0.7);color:#fff;padding:8px;border-radius:8px;font-size:12px;z-index:12000;backdrop-filter:blur(6px);';
-    const header = document.createElement('div');
-    header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px;';
-    const title = document.createElement('strong'); title.textContent = 'Mobile Debug';
-    title.style.fontSize = '13px';
-    const clearBtn = document.createElement('button'); clearBtn.textContent = 'Clear';
-    clearBtn.style.cssText = 'background:transparent;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:12px;';
-    clearBtn.addEventListener('click', () => { logList.innerHTML = ''; });
-    header.appendChild(title); header.appendChild(clearBtn);
-    const logList = document.createElement('div');
-    logList.id = 'mobile-debug-log';
-    panel.appendChild(header); panel.appendChild(logList);
-    document.body.appendChild(panel);
-    window.__mobileDebugPanel = { panel, logList };
-    return window.__mobileDebugPanel;
-}
 
-function showMobileDebug(msg) {
-    try {
-        const dbg = ensureMobileDebugPanel();
-        const time = new Date().toLocaleTimeString();
-        const entry = document.createElement('div');
-        entry.textContent = `[${time}] ${msg}`;
-        entry.style.padding = '4px 0';
-        dbg.logList.insertBefore(entry, dbg.logList.firstChild);
-        // keep the panel to a reasonable size
-        while (dbg.logList.childNodes.length > 200) dbg.logList.removeChild(dbg.logList.lastChild);
-    } catch (e) { console.debug('mobile-debug error', e); }
-}
-
-// Create the debug panel if on a touch-capable device to aid diagnosis.
-if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-    document.addEventListener('DOMContentLoaded', () => {
-        try { ensureMobileDebugPanel(); showMobileDebug('Debug panel initialized'); } catch(e){}
-    });
-}
 
 // Global focus logging and temporary mitigation: when visuals are suspended (input focus)
 // block programmatic or accidental focus on BUTTON elements which can steal the keyboard.
