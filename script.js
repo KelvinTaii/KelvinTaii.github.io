@@ -420,6 +420,21 @@ function initContactForm() {
     const form = document.querySelector('.contact-form');
     
     if (form) {
+        // On some mobile browsers overlays or fast touch handlers can prevent the
+        // virtual keyboard from appearing. Add passive touchstart handlers to
+        // explicitly focus the field on touch, which avoids flicker on iOS/Android.
+        const inputs = Array.from(form.querySelectorAll('input, textarea, button'));
+        inputs.forEach(inp => {
+            // Only attach for touch capable devices
+            inp.addEventListener('touchstart', function(ev) {
+                // If element is not focused, focus it. Use a tiny delay to avoid
+                // interfering with other gesture handlers.
+                if (document.activeElement !== this) {
+                    setTimeout(() => { try { this.focus(); } catch(e){} }, 50);
+                }
+            }, { passive: true });
+        });
+
         form.addEventListener('submit', function(e) {
             e.preventDefault();
 

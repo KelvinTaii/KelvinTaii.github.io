@@ -1195,8 +1195,16 @@ body > section:nth-of-type(even) {
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    pointer-events: none; /* don't block taps on mobile inputs */
 }
+
+/* Ensure the loading overlay does not intercept touches on mobile devices */
+.loading { pointer-events: none; }
+
+/* Allow touch interactions on form controls and reduce gesture interference */
+.contact-form input,
+.contact-form textarea,
+.contact-form button { touch-action: manipulation; }
+*** End Patch
 
 .loading-spinner {
     width: 50px;
