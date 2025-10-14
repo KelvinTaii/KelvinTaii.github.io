@@ -620,6 +620,29 @@ if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
     });
 }
 
+// Global focus logging and temporary mitigation: when visuals are suspended (input focus)
+// block programmatic or accidental focus on BUTTON elements which can steal the keyboard.
+document.addEventListener('focusin', function(e) {
+    try {
+        const el = e.target;
+        const info = `${el.tagName}${el.id ? '#'+el.id : ''}${el.name ? ' name='+el.name : ''} class=${el.className || ''}`;
+        showMobileDebug(`focusin -> ${info}`);
+        // If visuals are suspended (we're trying to keep keyboard active) and a BUTTON
+        // receives focus, immediately blur it to avoid losing keyboard focus.
+        if (window.__suspendVisuals && el && el.tagName === 'BUTTON') {
+            try { el.blur(); showMobileDebug(`blocked focus on BUTTON ${el.id||el.name||''}`); } catch (e) {}
+        }
+    } catch (e) { }
+});
+
+document.addEventListener('focusout', function(e) {
+    try {
+        const el = e.target;
+        const info = `${el.tagName}${el.id ? '#'+el.id : ''}${el.name ? ' name='+el.name : ''} class=${el.className || ''}`;
+        showMobileDebug(`focusout -> ${info}`);
+    } catch (e) { }
+});
+
 // Email validation
 function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
