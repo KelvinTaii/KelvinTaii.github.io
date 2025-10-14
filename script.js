@@ -2,6 +2,10 @@
 // Author: tai
 // Description: Interactive features and animations for portfolio website
 
+// Flag for touch-capable devices — used to disable desktop-only visuals that can
+// interfere with mobile input focus.
+window.__isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
+
 document.addEventListener('DOMContentLoaded', function() {
     // Prevent browser from auto-jumping to a fragment identifier on initial load.
     // If there's a hash in the URL we temporarily remove it (without creating a new history entry)
@@ -451,8 +455,10 @@ function initContactForm() {
             }, { passive: true });
 
             // Log focus/blur to the mobile debug panel for diagnosis
-            inp.addEventListener('focus', function() { showMobileDebug(`focus  -> ${this.id || this.name || this.tagName}`); });
-            inp.addEventListener('blur', function() { showMobileDebug(`blur   -> ${this.id || this.name || this.tagName}`); });
+            inp.addEventListener('focus', function() { showMobileDebug(`focus  -> ${this.id || this.name || this.tagName}`); try { suspendVisuals(); } catch(e){} });
+            inp.addEventListener('blur', function() { showMobileDebug(`blur   -> ${this.id || this.name || this.tagName}`); try { resumeVisuals(); } catch(e){} });
+            // Also suspend visuals when pointerdown begins (covers stylus/touch/mouse)
+            inp.addEventListener('pointerdown', function() { try { suspendVisuals(); } catch(e){} }, { passive: true });
         });
 
         form.addEventListener('submit', function(e) {
@@ -743,9 +749,11 @@ function initParallaxEffects() {
     const floatingElements = document.querySelectorAll('.element');
     
     window.addEventListener('scroll', function() {
+        // If visuals are suspended (e.g. input focused on mobile), skip parallax updates
+        if (window.__suspendVisuals) return;
         const scrolled = window.pageYOffset;
         const rate = scrolled * -0.5;
-        
+
         floatingElements.forEach((element, index) => {
             const speed = (index + 1) * 0.1;
             element.style.transform = `translateY(${rate * speed}px)`;
@@ -923,6 +931,7 @@ function createParticleSystem() {
         overflow: hidden;
     `;
     
+    particleContainer.className = 'particle-container';
     hero.appendChild(particleContainer);
     
     // Create particles
@@ -943,6 +952,8 @@ function createParticleSystem() {
         
         particleContainer.appendChild(particle);
     }
+    // expose container for runtime toggling
+    try { window.__particleContainer = particleContainer; } catch (e) {}
 }
 
 // Initialize particle system
@@ -977,3 +988,16 @@ console.log(`
 'color: #4ecdc4; font-size: 14px;',
 'color: #ff6b6b; font-size: 12px;'
 );
+
+// Helpers to suspend/resume visuals (used to avoid mobile keyboard flicker)
+function suspendVisuals() {
+    window.__suspendVisuals = true;
+    document.documentElement.classList.add('visuals-suspended');
+    try { if (window.__particleContainer) window.__particleContainer.style.display = 'none'; } catch (e) {}
+}
+
+function resumeVisuals() {
+    window.__suspendVisuals = false;
+    document.documentElement.classList.remove('visuals-suspended');
+    try { if (window.__particleContainer) window.__particleContainer.style.display = ''; } catch (e) {}
+}
