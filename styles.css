@@ -91,13 +91,13 @@ h2 {
 .contact-links a {
     display: inline-flex;
     align-items: center;
-    color: var(--text-primary);
+    color: var(--text-secondary);
     transition: color 0.15s ease, opacity 0.15s ease, transform 0.15s ease;
 }
 
 .contact-links a:hover,
 .contact-links a:focus {
-    color: var(--text-secondary);
+    color: var(--text-primary);
     text-decoration: none;
     transform: translateY(-2px);
 }
