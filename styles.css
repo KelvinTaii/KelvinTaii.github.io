@@ -79,8 +79,9 @@ h2 {
 .contact-links ul {
     list-style: none;
     display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.5rem;
 }
 
 .contact-links li {
@@ -90,14 +91,15 @@ h2 {
 .contact-links a {
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
     color: var(--text-primary);
+    transition: color 0.15s ease, opacity 0.15s ease, transform 0.15s ease;
 }
 
 .contact-links a:hover,
 .contact-links a:focus {
     color: var(--text-secondary);
     text-decoration: none;
+    transform: translateY(-2px);
 }
 
 .contact-links svg {
