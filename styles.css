@@ -84,16 +84,24 @@ h2 {
 }
 
 .contact-links li {
-    display: flex;
-    align-items: baseline;
     font-size: 1.05rem;
 }
 
-.contact-links strong {
-    font-weight: normal;
+.contact-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
     color: var(--text-primary);
-    min-width: 90px;
-    display: inline-block;
+}
+
+.contact-links a:hover,
+.contact-links a:focus {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.contact-links svg {
+    flex-shrink: 0;
 }
 
 a {
